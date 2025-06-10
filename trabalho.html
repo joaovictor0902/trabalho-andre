@@ -9,15 +9,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
-    <!-- Chosen Palette: Warm Neutrals (Slate, Stone, Amber) -->
-    <!-- Application Structure Plan: A single-page application with a fixed sidebar for navigation. The main content area is scrollable. The structure begins with a "Visão Geral" (Overview) dashboard that presents key stats, a comparative performance chart, and a CSS-based component synergy diagram. This high-level view allows for quick understanding and comparison. Following the overview, dedicated sections for each component (CPU, RAM, SSD, Placa-Mãe) provide in-depth information. This top-down approach was chosen because it caters to both users who want a quick summary and those who wish to delve into the details of each part, enhancing usability and information retention. The flow is logical: overview -> deep dive. -->
-    <!-- Visualization & Content Choices: 
-        - Report Info: Component Performance Comparison -> Goal: Compare -> Viz: Interactive Bar Chart -> Interaction: Hover tooltips show precise values. -> Justification: A bar chart is excellent for visually comparing disparate metrics like speed (MB/s) and power (Watts) in a normalized way, making complex data immediately understandable. -> Library: Chart.js (Canvas).
-        - Report Info: Component Synergy -> Goal: Relationships -> Viz: CSS/HTML Diagram -> Interaction: Static visual aid. -> Justification: A visual diagram is more intuitive for understanding how components connect than text alone. Building it with HTML/CSS avoids forbidden SVG/image files and adds a unique, clean aesthetic. -> Method: Styled divs with borders.
-        - Report Info: Detailed Specs -> Goal: Inform/Organize -> Viz: HTML Tables -> Interaction: None. -> Justification: Tables are the standard and most effective way to present structured technical data for easy reading and comparison. -> Method: HTML/Tailwind.
-        - Report Info: Key stats for each component -> Goal: Inform -> Viz: Stat Cards -> Interaction: None. -> Justification: Large, bold "hero" stats catch the eye and highlight the most impressive features of each component. -> Method: HTML/Tailwind.
-    -->
-    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
     <style>
         body {
             font-family: 'Inter', sans-serif;
