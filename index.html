@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-<html lang="pt-BR" class="scroll-smooth">
-<head>
+<html lang="pt-BR" class="scroll-smooth"> <!-- A classe 'dark' será adicionada/removida aqui -->
+<head lang="pt-BR">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Desvendando o Coração do PC - UniFatecie</title>
@@ -9,20 +9,13 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
-    <!-- Chosen Palette: Warm Neutrals (Slate, Stone, Amber) -->
-    <!-- Application Structure Plan: A single-page application with a fixed sidebar for navigation. The main content area is scrollable. The structure begins with a "Visão Geral" (Overview) dashboard that presents key stats, a comparative performance chart, and a CSS-based component synergy diagram. This high-level view allows for quick understanding and comparison. Following the overview, dedicated sections for each component (CPU, RAM, SSD, Placa-Mãe) provide in-depth information. This top-down approach was chosen because it caters to both users who want a quick summary and those who wish to delve into the details of each part, enhancing usability and information retention. The flow is logical: overview -> deep dive. -->
-    <!-- Visualization & Content Choices: 
-        - Report Info: Component Performance Comparison -> Goal: Compare -> Viz: Interactive Bar Chart -> Interaction: Hover tooltips show precise values. -> Justification: A bar chart is excellent for visually comparing disparate metrics like speed (MB/s) and power (Watts) in a normalized way, making complex data immediately understandable. -> Library: Chart.js (Canvas).
-        - Report Info: Component Synergy -> Goal: Relationships -> Viz: CSS/HTML Diagram -> Interaction: Static visual aid. -> Justification: A visual diagram is more intuitive for understanding how components connect than text alone. Building it with HTML/CSS avoids forbidden SVG/image files and adds a unique, clean aesthetic. -> Method: Styled divs with borders.
-        - Report Info: Detailed Specs -> Goal: Inform/Organize -> Viz: HTML Tables -> Interaction: None. -> Justification: Tables are the standard and most effective way to present structured technical data for easy reading and comparison. -> Method: HTML/Tailwind.
-        - Report Info: Key stats for each component -> Goal: Inform -> Viz: Stat Cards -> Interaction: None. -> Justification: Large, bold "hero" stats catch the eye and highlight the most impressive features of each component. -> Method: HTML/Tailwind.
-    -->
-    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #0f172a; /* slate-900 */
+            /* background-color agora é controlado por Tailwind no body tag */
         }
+        
+        /* Estilos específicos para o container do gráfico */
         .chart-container {
             position: relative;
             width: 100%;
@@ -37,15 +30,22 @@
                 height: 400px;
             }
         }
+
+        /* Estilos para o diagrama de sinergia */
         .synergy-diagram .line {
-            background-color: #64748b; /* slate-500 */
+            background-color: #94a3b8; /* slate-400 para modo claro */
             position: absolute;
         }
+        .dark .synergy-diagram .line {
+            background-color: #64748b; /* slate-500 para modo escuro */
+        }
+
         .synergy-diagram .line-h { height: 2px; }
         .synergy-diagram .line-v { width: 2px; }
+
         .synergy-diagram .label {
-            background-color: #334155; /* slate-700 */
-            color: #cbd5e1; /* slate-300 */
+            background-color: #e2e8f0; /* slate-200 para modo claro */
+            color: #334155; /* slate-700 para modo claro */
             padding: 2px 6px;
             border-radius: 4px;
             font-size: 0.75rem;
@@ -53,93 +53,121 @@
             position: absolute;
             white-space: nowrap;
         }
+        .dark .synergy-diagram .label {
+            background-color: #334155; /* slate-700 para modo escuro */
+            color: #cbd5e1; /* slate-300 para modo escuro */
+        }
+
+        /* Efeito de Fade-in com JavaScript */
+        .fade-in-section {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+
+        .fade-in-section.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
     </style>
 </head>
-<body class="text-slate-200">
+<body class="bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 transition-colors duration-300">
 
     <div class="flex">
-        <aside class="sticky top-0 h-screen w-64 bg-slate-950 text-white p-6 hidden lg:flex flex-col">
-            <h1 class="text-2xl font-bold mb-8 text-amber-400">Hardware PC</h1>
+        <aside class="sticky top-0 h-screen w-64 bg-gray-50 dark:bg-slate-950 text-slate-800 dark:text-white p-6 hidden lg:flex flex-col transition-colors duration-300">
+            <h1 class="text-2xl font-bold mb-8 text-amber-500 dark:text-amber-400">Hardware PC</h1>
             <nav>
                 <ul class="space-y-4">
-                    <li><a href="#overview" class="block font-medium hover:text-amber-300">Visão Geral</a></li>
-                    <li><a href="#cpu" class="block font-medium hover:text-amber-300">Processador</a></li>
-                    <li><a href="#ram" class="block font-medium hover:text-amber-300">Memória RAM</a></li>
-                    <li><a href="#ssd" class="block font-medium hover:text-amber-300">Armazenamento</a></li>
-                    <li><a href="#motherboard" class="block font-medium hover:text-amber-300">Placa-Mãe</a></li>
+                    <li><a href="#overview" class="block font-medium hover:text-amber-600 dark:hover:text-amber-300">Visão Geral</a></li>
+                    <li><a href="#cpu" class="block font-medium hover:text-amber-600 dark:hover:text-amber-300">Processador</a></li>
+                    <li><a href="#ram" class="block font-medium hover:text-amber-600 dark:hover:text-amber-300">Memória RAM</a></li>
+                    <li><a href="#ssd" class="block font-medium hover:text-amber-600 dark:hover:text-amber-300">Armazenamento</a></li>
+                    <li><a href="#motherboard" class="block font-medium hover:text-amber-600 dark:hover:text-amber-300">Placa-Mãe</a></li>
                 </ul>
             </nav>
-            <div class="mt-auto text-xs text-slate-400">
+            <div class="mt-auto">
+                <button id="theme-toggle-desktop" class="w-full mb-4 p-2 rounded text-sm font-medium text-slate-700 dark:text-slate-200 bg-gray-200 dark:bg-slate-800 hover:bg-gray-300 dark:hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-amber-500 transition-colors duration-300" aria-label="Alternar tema">
+                    <!-- Ícone será injetado por JS -->
+                </button>
+                <div class="text-xs text-slate-500 dark:text-slate-400">
                 <p class="font-bold">Trabalho UniFatecie</p>
                 <p>Arquitetura de Computadores</p>
+                </div>
             </div>
         </aside>
 
         <main class="w-full lg:w-[calc(100%-16rem)] p-4 sm:p-8 md:p-12">
             
             <header class="lg:hidden mb-8">
-                 <h1 class="text-3xl font-bold text-slate-100">Desvendando o Coração do PC</h1>
-                 <p class="text-slate-400">Um guia interativo sobre os componentes de um PC de alta performance.</p>
+                 <div class="flex justify-between items-center">
+                    <div>
+                        <h1 class="text-3xl font-bold text-slate-800 dark:text-slate-100">Desvendando o Coração do PC</h1>
+                        <p class="text-slate-600 dark:text-slate-400">Um guia interativo sobre os componentes de um PC de alta performance.</p>
+                    </div>
+                    <button id="theme-toggle-mobile" class="p-2 rounded text-slate-700 dark:text-slate-200 bg-gray-200 dark:bg-slate-800 hover:bg-gray-300 dark:hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-amber-500 transition-colors duration-300" aria-label="Alternar tema">
+                        <!-- Ícone será injetado por JS -->
+                    </button>
+                 </div>
             </header>
 
-            <section id="overview" class="mb-16">
-                <h2 class="text-4xl font-extrabold mb-4 text-slate-100">Visão Geral e Sinergia</h2>
-                <p class="mb-8 text-lg text-slate-400">
+            <section id="overview" class="mb-16 fade-in-section">
+                <h2 class="text-4xl font-extrabold mb-4 text-slate-800 dark:text-slate-100">Visão Geral e Sinergia</h2>
+                <p class="mb-8 text-lg text-slate-600 dark:text-slate-400">
                     E aí, pronto para explorar o mundo do hardware? Aqui, a gente te dá um 'spoiler' dos componentes mais top que escolhemos. Você vai ver rapidinho como eles se comparam num gráfico e como se encaixam na placa-mãe. A ideia é mostrar que não são só peças soltas, mas um time super entrosado que faz seu PC voar!
                 </p>
                 
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-                    <div class="bg-slate-800 p-5 rounded-xl shadow-xl border border-slate-700">
-                        <h3 class="font-bold text-slate-100">CPU Clock</h3>
-                        <p class="text-4xl font-black text-amber-500">6.0<span class="text-2xl">GHz</span></p>
-                        <p class="text-sm text-slate-400">Turbo Máximo</p>
+                    <div class="bg-gray-50 dark:bg-slate-800 p-5 rounded-xl shadow-xl border border-gray-200 dark:border-slate-700 transition-colors duration-300">
+                        <h3 class="font-bold text-slate-800 dark:text-slate-100">CPU Clock</h3>
+                        <p class="text-4xl font-black text-amber-600 dark:text-amber-500">6.0<span class="text-2xl">GHz</span></p>
+                        <p class="text-sm text-slate-500 dark:text-slate-400">Turbo Máximo</p>
                     </div>
-                    <div class="bg-slate-800 p-5 rounded-xl shadow-xl border border-slate-700">
-                        <h3 class="font-bold text-slate-100">RAM Speed</h3>
-                        <p class="text-4xl font-black text-amber-500">5600<span class="text-2xl">MT/s</span></p>
-                        <p class="text-sm text-slate-400">Padrão DDR5 Suportado</p>
+                    <div class="bg-gray-50 dark:bg-slate-800 p-5 rounded-xl shadow-xl border border-gray-200 dark:border-slate-700 transition-colors duration-300">
+                        <h3 class="font-bold text-slate-800 dark:text-slate-100">RAM Speed</h3>
+                        <p class="text-4xl font-black text-amber-600 dark:text-amber-500">5600<span class="text-2xl">MT/s</span></p>
+                        <p class="text-sm text-slate-500 dark:text-slate-400">Padrão DDR5 Suportado</p>
                     </div>
-                    <div class="bg-slate-800 p-5 rounded-xl shadow-xl border border-slate-700">
-                        <h3 class="font-bold text-slate-100">SSD Read Speed</h3>
-                        <p class="text-4xl font-black text-amber-500">14.5k<span class="text-2xl">MB/s</span></p>
-                        <p class="text-sm text-slate-400">Leitura Sequencial</p>
+                    <div class="bg-gray-50 dark:bg-slate-800 p-5 rounded-xl shadow-xl border border-gray-200 dark:border-slate-700 transition-colors duration-300">
+                        <h3 class="font-bold text-slate-800 dark:text-slate-100">SSD Read Speed</h3>
+                        <p class="text-4xl font-black text-amber-600 dark:text-amber-500">14.5k<span class="text-2xl">MB/s</span></p>
+                        <p class="text-sm text-slate-500 dark:text-slate-400">Leitura Sequencial</p>
                     </div>
-                    <div class="bg-slate-800 p-5 rounded-xl shadow-xl border border-slate-700">
-                        <h3 class="font-bold text-slate-100">Motherboard PCIe</h3>
-                        <p class="text-4xl font-black text-amber-500">Gen 5.0</p>
-                        <p class="text-sm text-slate-400">Pronta para o Futuro</p>
+                    <div class="bg-gray-50 dark:bg-slate-800 p-5 rounded-xl shadow-xl border border-gray-200 dark:border-slate-700 transition-colors duration-300">
+                        <h3 class="font-bold text-slate-800 dark:text-slate-100">Motherboard PCIe</h3>
+                        <p class="text-4xl font-black text-amber-600 dark:text-amber-500">Gen 5.0</p>
+                        <p class="text-sm text-slate-500 dark:text-slate-400">Pronta para o Futuro</p>
                     </div>
                 </div>
 
-                <div class="bg-slate-800 p-6 rounded-xl shadow-xl border border-slate-700 mb-12">
-                    <h3 class="text-2xl font-bold text-center mb-4 text-slate-100">Comparativo de Performance</h3>
+                <div class="bg-gray-50 dark:bg-slate-800 p-6 rounded-xl shadow-xl border border-gray-200 dark:border-slate-700 mb-12 transition-colors duration-300">
+                    <h3 class="text-2xl font-bold text-center mb-4 text-slate-800 dark:text-slate-100">Comparativo de Performance</h3>
                     <div class="chart-container">
                         <canvas id="performanceChart"></canvas>
                     </div>
                 </div>
                 
-                <div class="bg-slate-800 p-6 rounded-xl shadow-xl border border-slate-700">
-                    <h3 class="text-2xl font-bold text-center mb-8 text-slate-100">Diagrama de Sinergia dos Componentes</h3>
+                <div class="bg-gray-50 dark:bg-slate-800 p-6 rounded-xl shadow-xl border border-gray-200 dark:border-slate-700 transition-colors duration-300">
+                    <h3 class="text-2xl font-bold text-center mb-8 text-slate-800 dark:text-slate-100">Diagrama de Sinergia dos Componentes</h3>
                     <div class="synergy-diagram relative w-full h-[350px] md:h-[250px] max-w-2xl mx-auto">
                         <div class="line line-v" style="left: 50%; top: 0; height: 100%;"></div>
                         <div class="line line-h" style="left: 25%; top: 50%; width: 50%;"></div>
                         
                         <div class="absolute flex flex-col items-center" style="left: 50%; top: 50%; transform: translate(-50%, -50%);">
-                            <div class="bg-slate-700 text-white font-bold p-4 rounded-lg w-48 text-center">Placa-Mãe<br>(Z790 HERO)</div>
+                            <div class="bg-slate-300 dark:bg-slate-700 text-slate-800 dark:text-white font-bold p-4 rounded-lg w-48 text-center transition-colors duration-300">Placa-Mãe<br>(Z790 HERO)</div>
                         </div>
 
                         <div class="absolute flex flex-col items-center text-center" style="left: 50%; top: 0; transform: translateX(-50%);">
-                            <div class="bg-amber-500 text-slate-900 p-3 rounded-lg w-32">CPU<br>(i9-14900K)</div>
+                            <div class="bg-amber-500 text-slate-900 p-3 rounded-lg w-32 transition-colors duration-300">CPU<br>(i9-14900K)</div>
                             <div class="label" style="bottom: -25px;">Soquete LGA 1700</div>
                         </div>
 
                          <div class="absolute flex flex-col items-center text-center" style="left: 0; top: 50%; transform: translateY(-50%);">
-                            <div class="bg-amber-500 text-slate-900 p-3 rounded-lg w-32">RAM<br>(DDR5)</div>
+                            <div class="bg-amber-500 text-slate-900 p-3 rounded-lg w-32 transition-colors duration-300">RAM<br>(DDR5)</div>
                             <div class="label" style="bottom: -25px;">Slots DIMM</div>
                         </div>
 
                         <div class="absolute flex flex-col items-center text-center" style="right: 0; top: 50%; transform: translateY(-50%);">
-                            <div class="bg-amber-500 text-slate-900 p-3 rounded-lg w-32">SSD<br>(PCIe 5.0)</div>
+                            <div class="bg-amber-500 text-slate-900 p-3 rounded-lg w-32 transition-colors duration-300">SSD<br>(PCIe 5.0)</div>
                             <div class="label" style="bottom: -25px;">Slot M.2</div>
                         </div>
                     </div>
@@ -147,137 +175,136 @@
 
             </section>
 
-            <section id="cpu" class="mb-16 pt-16">
-                <h2 class="text-4xl font-extrabold mb-4 text-slate-100">1. O Cérebro da Máquina: Processador</h2>
-                 <p class="mb-8 text-lg text-slate-400">
-                    Sabe o que faz o seu PC pensar rapidão e rodar tudo liso? É o processador, o 'cérebro' da máquina! Pra esse trabalho, a gente pegou um dos mais brabos que tem: o Intel Core i9-14900K. Com ele, que tem um monte de 'núcleos' inteligentes e chega a uns 6 GHz, seu PC vai ser um monstro pra qualquer coisa!
+            <section id="cpu" class="mb-16 pt-16 fade-in-section">
+                <h2 class="text-4xl font-extrabold mb-4 text-slate-800 dark:text-slate-100">1. O Cérebro da Máquina: Processador</h2>
+                 <p class="mb-8 text-lg text-slate-600 dark:text-slate-400">
+                    Sabe o que faz o seu PC pensar rapidão e rodar tudo liso? É o processador, o 'cérebro' da máquina! Ele é o cara que executa todas as instruções e cálculos que seu computador precisa. Desde abrir um navegador, jogar seus games favoritos com gráficos no máximo, até editar vídeos pesados, TUDO passa por ele. Quanto mais potente o processador, mais rápido e fluido seu PC vai ser. Pra esse trabalho, a gente pegou um dos mais brabos que tem: o Intel Core i9-14900K. Com ele, que tem um monte de 'núcleos' inteligentes e chega a uns 6 GHz, seu PC vai ser um monstro pra qualquer coisa!
                 </p>
                 <div class="flex justify-center items-center mb-8">
-                    <img src="https://images.kabum.com.br/produtos/fotos/401129/processador-intel-core-i9-14900k-24-cores-32-threads-3-2ghz-5-8ghz-turbo-cache-36mb-lga-1700-bx8071514900k_1701385989_g.jpg" onerror="this.onerror=null;this.src='https://placehold.co/600x400/fde68a/1e293b?text=Processador+Intel+Core+i9';" alt="[Imagem de um Processador Intel Core i9-14900K]" class="rounded-xl shadow-xl w-full md:w-2/3 lg:w-1/2 h-auto max-h-[300px] object-contain">
+                    <img src="https://images3.kabum.com.br/produtos/fotos/497573/processador-intel-core-i9-14900k-bx8071514900k_1697721913_g.jpg" alt="Processador Intel Core i9-14900K" class="bg-gray-200 dark:bg-slate-800 rounded-xl shadow-xl w-full md:w-2/3 lg:w-1/2 h-auto max-h-[300px] object-contain transition-colors duration-300">
                 </div>
-                <div class="bg-slate-800 p-6 rounded-xl shadow-xl border border-slate-700 overflow-x-auto mb-6">
+                <div class="bg-gray-50 dark:bg-slate-800 p-6 rounded-xl shadow-xl border border-gray-200 dark:border-slate-700 overflow-x-auto mb-6 transition-colors duration-300">
                     <table class="w-full text-left">
-                        <thead class="border-b-2 border-slate-700">
-                            <tr><th colspan="2" class="text-xl font-bold pb-2 text-slate-100">Ficha Técnica: Intel Core i9-14900K</th></tr>
+                        <thead class="border-b-2 border-gray-300 dark:border-slate-700">
+                            <tr><th colspan="2" class="text-xl font-bold pb-2 text-slate-800 dark:text-slate-100">Ficha Técnica: Intel Core i9-14900K</th></tr>
                         </thead>
                         <tbody>
-                            <tr class="border-b border-slate-800"><td class="py-2 pr-4 font-semibold text-slate-200">Arquitetura</td><td class="text-slate-300">Raptor Lake-R (Híbrida)</td></tr>
-                            <tr class="border-b border-slate-800"><td class="py-2 pr-4 font-semibold text-slate-200">Núcleos / Threads</td><td class="text-slate-300">24 (8 P-cores + 16 E-cores) / 32</td></tr>
-                            <tr class="border-b border-slate-800"><td class="py-2 pr-4 font-semibold text-slate-200">Frequência Turbo Máx.</td><td class="text-slate-300">Até 6.0 GHz</td></tr>
-                            <tr class="border-b border-slate-800"><td class="py-2 pr-4 font-semibold text-slate-200">Cache L3</td><td class="text-slate-300">36 MB Intel Smart Cache</td></tr>
-                            <tr class="border-b border-slate-800"><td class="py-2 pr-4 font-semibold text-slate-200">TDP (Base / Máx.)</td><td class="text-slate-300">125W / 253W</td></tr>
-                            <tr class="border-b border-slate-800"><td class="py-2 pr-4 font-semibold text-slate-200">Soquete</td><td class="text-slate-300">LGA 1700</td></tr>
-                            <tr><td class="py-2 pr-4 font-semibold text-slate-200">Suporte PCIe</td><td class="text-slate-300">Gen 5.0</td></tr>
+                            <tr class="border-b border-gray-100 dark:border-slate-800"><td class="py-2 pr-4 font-semibold text-slate-700 dark:text-slate-200">Arquitetura</td><td class="text-slate-600 dark:text-slate-300">Raptor Lake-R (Híbrida)</td></tr>
+                            <tr class="border-b border-gray-100 dark:border-slate-800"><td class="py-2 pr-4 font-semibold text-slate-700 dark:text-slate-200">Núcleos / Threads</td><td class="text-slate-600 dark:text-slate-300">24 (8 P-cores + 16 E-cores) / 32</td></tr>
+                            <tr class="border-b border-gray-100 dark:border-slate-800"><td class="py-2 pr-4 font-semibold text-slate-700 dark:text-slate-200">Frequência Turbo Máx.</td><td class="text-slate-600 dark:text-slate-300">Até 6.0 GHz</td></tr>
+                            <tr class="border-b border-gray-100 dark:border-slate-800"><td class="py-2 pr-4 font-semibold text-slate-700 dark:text-slate-200">Cache L3</td><td class="text-slate-600 dark:text-slate-300">36 MB Intel Smart Cache</td></tr>
+                            <tr class="border-b border-gray-100 dark:border-slate-800"><td class="py-2 pr-4 font-semibold text-slate-700 dark:text-slate-200">TDP (Base / Máx.)</td><td class="text-slate-600 dark:text-slate-300">125W / 253W</td></tr>
+                            <tr class="border-b border-gray-100 dark:border-slate-800"><td class="py-2 pr-4 font-semibold text-slate-700 dark:text-slate-200">Soquete</td><td class="text-slate-600 dark:text-slate-300">LGA 1700</td></tr>
+                            <tr><td class="py-2 pr-4 font-semibold text-slate-700 dark:text-slate-200">Suporte PCIe</td><td class="text-slate-600 dark:text-slate-300">Gen 5.0</td></tr>
                         </tbody>
                     </table>
                 </div>
-                <div class="text-sm text-slate-400">
-                    <h4 class="font-bold mb-2 text-slate-300">Fonte Principal:</h4>
+                <div class="text-sm text-slate-500 dark:text-slate-400">
+                    <h4 class="font-bold mb-2 text-slate-600 dark:text-slate-300">Fonte Principal:</h4>
                     <ul class="list-disc list-inside space-y-1">
-                        <li><a href="https://www.kabum.com.br/produto/401129/processador-intel-core-i9-14900k-24-cores-32-threads-3-2ghz-5-8ghz-turbo-cache-36mb-lga-1700-bx8071514900k" target="_blank" class="hover:text-amber-300 underline">Kabum - Processador Intel Core i9-14900K</a></li>
+                        <li><a href="https://www.kabum.com.br/produto/497573" target="_blank" class="hover:text-amber-600 dark:hover:text-amber-300 underline">KaBuM! - Processador Intel Core i9-14900K (BX8071514900K)</a></li>
                     </ul>
                 </div>
             </section>
 
-            <section id="ram" class="mb-16 pt-16">
-                <h2 class="text-4xl font-extrabold mb-4 text-slate-100">2. A Memória de Curto Prazo: RAM</h2>
-                 <p class="mb-8 text-lg text-slate-400">
-                    Pensa na memória RAM como a mesa de trabalho do seu PC. Quanto maior e mais rápida, mais bagunça (leia-se, programas e jogos) você pode ter ao mesmo tempo sem que ele engasgue. A DDR5 é a última moda, um verdadeiro 'turbo' comparado com a antiga DDR4. Ela vem com uns truques inteligentes pra economizar energia e até corrigir errinhos, garantindo que seu processador trabalhe no talo!
+            <section id="ram" class="mb-16 pt-16 fade-in-section">
+                <h2 class="text-4xl font-extrabold mb-4 text-slate-800 dark:text-slate-100">2. A Memória de Curto Prazo: RAM</h2>
+                 <p class="mb-8 text-lg text-slate-600 dark:text-slate-400">
+                    Pensa na memória RAM como a mesa de trabalho do seu PC, mas uma mesa que limpa tudo quando você desliga o computador! É nela que o sistema operacional e todos os programas que você está usando ficam armazenados para acesso super rápido. Quanto mais RAM e quanto mais rápida ela for, mais 'espaço de trabalho' seu computador tem pra abrir um monte de programas ao mesmo tempo, navegar com várias abas e jogar sem engasgos. Ela é crucial para a agilidade do sistema no dia a dia. A DDR5 é a última moda, um verdadeiro 'turbo' comparado com a antiga DDR4. Ela vem com uns truques inteligentes pra economizar energia e até corrigir errinhos, garantindo que seu processador trabalhe no talo!
                 </p>
                 <div class="flex justify-center items-center mb-8">
-                    <img src="https://images.kabum.com.br/produtos/fotos/334200/memoria-kingston-fury-beast-ddr5-16gb-5600mhz-cl40-preto-kf556c40bb-16_1669837943_g.jpg" onerror="this.onerror=null;this.src='https://placehold.co/600x400/fde68a/1e293b?text=Memoria+DDR5';" alt="[Imagem de um Módulo de Memória RAM DDR5]" class="rounded-xl shadow-xl w-full md:w-2/3 lg:w-1/2 h-auto max-h-[300px] object-contain">
+                    <img src="https://images6.kabum.com.br/produtos/fotos/172366/memoria-kingston-fury-beast-16gb-3200mhz-ddr4-cl16-preto-kf432c16bb1-16_1626271100_g.jpg" alt="Módulo de Memória RAM Kingston Fury Beast DDR5" class="bg-gray-200 dark:bg-slate-800 rounded-xl shadow-xl w-full md:w-2/3 lg:w-1/2 h-auto max-h-[300px] object-contain transition-colors duration-300">
                 </div>
-                <div class="bg-slate-800 p-6 rounded-xl shadow-xl border border-slate-700 overflow-x-auto mb-6">
+                <div class="bg-gray-50 dark:bg-slate-800 p-6 rounded-xl shadow-xl border border-gray-200 dark:border-slate-700 overflow-x-auto mb-6 transition-colors duration-300">
                    <table class="w-full text-left">
-                        <thead class="border-b-2 border-slate-700">
-                            <tr><th colspan="2" class="text-xl font-bold pb-2 text-slate-100">Propriedades Essenciais: RAM DDR5</th></tr>
+                        <thead class="border-b-2 border-gray-300 dark:border-slate-700">
+                            <tr><th colspan="2" class="text-xl font-bold pb-2 text-slate-800 dark:text-slate-100">Propriedades Essenciais: RAM DDR5</th></tr>
                         </thead>
                         <tbody>
-                            <tr class="border-b border-slate-800"><td class="py-2 pr-4 font-semibold text-slate-200">Tipo</td><td class="text-slate-300">DDR5 SDRAM (5ª Geração)</td></tr>
-                            <tr class="border-b border-slate-800"><td class="py-2 pr-4 font-semibold text-slate-200">Velocidade Inicial</td><td class="text-slate-300">4800 MT/s</td></tr>
-                            <tr class="border-b border-slate-800"><td class="py-2 pr-4 font-semibold text-slate-200">Tensão de Operação</td><td class="text-slate-300">1.1V (Mais eficiente)</td></tr>
-                            <tr class="border-b border-slate-800"><td class="py-2 pr-4 font-semibold text-slate-200">Gerenciamento Energia</td><td class="text-slate-300">PMIC no módulo</td></tr>
-                            <tr class="border-b border-slate-800"><td class="py-2 pr-4 font-semibold text-slate-200">Estrutura de Canal</td><td class="text-slate-300">Dois subcanais de 32-bit</td></tr>
-                            <tr class="border-b border-slate-800"><td class="py-2 pr-4 font-semibold text-slate-200">Correção de Erros</td><td class="text-slate-300">On-Die ECC (interno ao chip)</td></tr>
-                            <tr><td class="py-2 pr-4 font-semibold text-slate-200">Número de Bancos</td><td class="text-slate-300">32 (dobro da DDR4)</td></tr>
+                            <tr class="border-b border-gray-100 dark:border-slate-800"><td class="py-2 pr-4 font-semibold text-slate-700 dark:text-slate-200">Tipo</td><td class="text-slate-600 dark:text-slate-300">DDR5 SDRAM (5ª Geração)</td></tr>
+                            <tr class="border-b border-gray-100 dark:border-slate-800"><td class="py-2 pr-4 font-semibold text-slate-700 dark:text-slate-200">Tensão de Operação</td><td class="text-slate-600 dark:text-slate-300">1.1V (Mais eficiente)</td></tr>
+                            <tr class="border-b border-gray-100 dark:border-slate-800"><td class="py-2 pr-4 font-semibold text-slate-700 dark:text-slate-200">Gerenciamento Energia</td><td class="text-slate-600 dark:text-slate-300">PMIC no módulo</td></tr>
+                            <tr class="border-b border-gray-100 dark:border-slate-800"><td class="py-2 pr-4 font-semibold text-slate-700 dark:text-slate-200">Estrutura de Canal</td><td class="text-slate-600 dark:text-slate-300">Dois subcanais de 32-bit</td></tr>
+                            <tr class="border-b border-gray-100 dark:border-slate-800"><td class="py-2 pr-4 font-semibold text-slate-700 dark:text-slate-200">Correção de Erros</td><td class="text-slate-600 dark:text-slate-300">On-Die ECC (interno ao chip)</td></tr>
+                            <tr><td class="py-2 pr-4 font-semibold text-slate-700 dark:text-slate-200">Número de Bancos</td><td class="text-slate-600 dark:text-slate-300">32 (dobro da DDR4)</td></tr>
                         </tbody>
                     </table>
                 </div>
-                <div class="text-sm text-slate-400">
-                    <h4 class="font-bold mb-2 text-slate-300">Fonte Principal:</h4>
+                <div class="text-sm text-slate-500 dark:text-slate-400">
+                    <h4 class="font-bold mb-2 text-slate-600 dark:text-slate-300">Fonte Principal:</h4>
                     <ul class="list-disc list-inside space-y-1">
-                        <li><a href="https://www.kingston.com/br/blog/pc-performance/ddr5-overview" target="_blank" class="hover:text-amber-300 underline">Kingston - O que é DDR5?</a></li>
+                        <li><a href="https://www.kabum.com.br/produto/172366/memoria-ram-kingston-fury-beast-16gb-3200mhz-ddr4-cl16-preto-kf432c16bb1-16" target="_blank" class="hover:text-amber-600 dark:hover:text-amber-300 underline">KaBuM! - Memória Kingston Fury Beast DDR5 16GB 5600MHz (KF556C40BB-16)</a></li>
                     </ul>
                 </div>
             </section>
             
-            <section id="ssd" class="mb-16 pt-16">
-                <h2 class="text-4xl font-extrabold mb-4 text-slate-100">3. O Baú de Tesouros: Armazenamento</h2>
-                 <p class="mb-8 text-lg text-slate-400">
-                    Sabe onde ficam guardados seus jogos, fotos e o Windows, mesmo quando o PC está desligado? No armazenamento! E pra não ter mais tela de carregamento infinita, a gente escolheu um SSD NVMe PCIe 5.0, tipo o Crucial T705. Esse bicho é tão rápido que lê dados a mais de 14.000 MB/s! É tipo um 'teletransporte' para seus arquivos, deixando tudo instantâneo.
+            <section id="ssd" class="mb-16 pt-16 fade-in-section">
+                <h2 class="text-4xl font-extrabold mb-4 text-slate-800 dark:text-slate-100">3. O Baú de Tesouros: Armazenamento</h2>
+                 <p class="mb-8 text-lg text-slate-600 dark:text-slate-400">
+                    Sabe onde ficam guardados seus jogos, fotos e o Windows, mesmo quando o PC está desligado? No armazenamento! Ele é responsável por guardar TUDO de forma permanente. Esqueça aqueles HDs lentos! Os SSDs (Solid State Drives), principalmente os NVMe PCIe 5.0, são tipo 'teletransporte' para seus arquivos. Com velocidades absurdas de leitura e gravação, seu sistema operacional inicia em segundos, seus jogos carregam num piscar de olhos e transferir arquivos gigantes não é mais um drama. Isso faz uma diferença GIGANTE na sensação de velocidade do seu PC! A gente escolheu um SSD NVMe PCIe 5.0, tipo o Crucial T705. Esse bicho é tão rápido que lê dados a mais de 14.000 MB/s!
                 </p>
                 <div class="flex justify-center items-center mb-8">
-                    <img src="https://images.kabum.com.br/produtos/fotos/505342/ssd-crucial-t705-2tb-nvme-pcie-gen5-x4-leitura-14500mb-s-e-gravacao-12700mb-s-ct2000t705ssd3_1707920194_g.jpg" onerror="this.onerror=null;this.src='https://placehold.co/600x400/fde68a/1e293b?text=SSD+NVMe+Gen5';" alt="[Imagem de Crucial T705 NVMe PCIe 5.0 SSD]" class="rounded-xl shadow-xl w-full md:w-2/3 lg:w-1/2 h-auto max-h-[300px] object-contain">
+                    <img src="https://images0.kabum.com.br/produtos/fotos/sync_mirakl/696620/large/SSD-M-2-2TB-Crucial-T700-Pro-Nvme-PCie-5-0-Ct2000t700ssd3_1739899240.jpg" alt="SSD Crucial T705 2TB NVMe PCIe Gen5" class="bg-gray-200 dark:bg-slate-800 rounded-xl shadow-xl w-full md:w-2/3 lg:w-1/2 h-auto max-h-[300px] object-contain transition-colors duration-300">
                 </div>
-                <div class="bg-slate-800 p-6 rounded-xl shadow-xl border border-slate-700 overflow-x-auto mb-6">
+                <div class="bg-gray-50 dark:bg-slate-800 p-6 rounded-xl shadow-xl border border-gray-200 dark:border-slate-700 overflow-x-auto mb-6 transition-colors duration-300">
                    <table class="w-full text-left">
-                        <thead class="border-b-2 border-slate-700">
-                            <tr><th colspan="2" class="text-xl font-bold pb-2 text-slate-100">Características Chave: SSD PCIe 5.0</th></tr>
+                        <thead class="border-b-2 border-gray-300 dark:border-slate-700">
+                            <tr><th colspan="2" class="text-xl font-bold pb-2 text-slate-800 dark:text-slate-100">Características Chave: SSD PCIe 5.0</th></tr>
                         </thead>
                         <tbody>
-                            <tr class="border-b border-slate-800"><td class="py-2 pr-4 font-semibold text-slate-200">Modelo (Exemplo)</td><td class="text-slate-300">Crucial T705 NVMe</td></tr>
-                            <tr class="border-b border-slate-800"><td class="py-2 pr-4 font-semibold text-slate-200">Interface</td><td class="text-slate-300">PCIe 5.0 x4 / NVMe 2.0</td></tr>
-                            <tr class="border-b border-slate-800"><td class="py-2 pr-4 font-semibold text-slate-200">Formato</td><td class="text-slate-300">M.2 2280</td></tr>
-                            <tr class="border-b border-slate-800"><td class="py-2 pr-4 font-semibold text-slate-200">Vel. Leitura Seq.</td><td class="text-slate-300">Até 14.500 MB/s</td></tr>
-                            <tr class="border-b border-slate-800"><td class="py-2 pr-4 font-semibold text-slate-200">Vel. Escrita Seq.</td><td class="text-slate-300">Até 12.700 MB/s</td></tr>
-                            <tr class="border-b border-slate-800"><td class="py-2 pr-4 font-semibold text-slate-200">Tecnologia NAND</td><td class="text-slate-300">Micron 232L 3D TLC NAND</td></tr>
-                            <tr><td class="py-2 pr-4 font-semibold text-slate-200">Refrigeração</td><td class="text-slate-300">Requer dissipador de calor</td></tr>
+                            <tr class="border-b border-gray-100 dark:border-slate-800"><td class="py-2 pr-4 font-semibold text-slate-700 dark:text-slate-200">Modelo (Exemplo)</td><td class="text-slate-600 dark:text-slate-300">Crucial T705 NVMe</td></tr>
+                            <tr class="border-b border-gray-100 dark:border-slate-800"><td class="py-2 pr-4 font-semibold text-slate-700 dark:text-slate-200">Interface</td><td class="text-slate-600 dark:text-slate-300">PCIe 5.0 x4 / NVMe 2.0</td></tr>
+                            <tr class="border-b border-gray-100 dark:border-slate-800"><td class="py-2 pr-4 font-semibold text-slate-700 dark:text-slate-200">Formato</td><td class="text-slate-600 dark:text-slate-300">M.2 2280</td></tr>
+                            <tr class="border-b border-gray-100 dark:border-slate-800"><td class="py-2 pr-4 font-semibold text-slate-700 dark:text-slate-200">Vel. Leitura Seq.</td><td class="text-slate-600 dark:text-slate-300">Até 14.500 MB/s</td></tr>
+                            <tr class="border-b border-gray-100 dark:border-slate-800"><td class="py-2 pr-4 font-semibold text-slate-700 dark:text-slate-200">Vel. Escrita Seq.</td><td class="text-slate-600 dark:text-slate-300">Até 12.700 MB/s</td></tr>
+                            <tr class="border-b border-gray-100 dark:border-slate-800"><td class="py-2 pr-4 font-semibold text-slate-700 dark:text-slate-200">Tecnologia NAND</td><td class="text-slate-600 dark:text-slate-300">Micron 232L 3D TLC NAND</td></tr>
+                            <tr><td class="py-2 pr-4 font-semibold text-slate-700 dark:text-slate-200">Refrigeração</td><td class="text-slate-600 dark:text-slate-300">Requer dissipador de calor</td></tr>
                         </tbody>
                     </table>
                 </div>
-                <div class="text-sm text-slate-400">
-                    <h4 class="font-bold mb-2 text-slate-300">Fonte Principal:</h4>
+                <div class="text-sm text-slate-500 dark:text-slate-400">
+                    <h4 class="font-bold mb-2 text-slate-600 dark:text-slate-300">Fonte Principal:</h4>
                     <ul class="list-disc list-inside space-y-1">
-                        <li><a href="https://www.kabum.com.br/produto/505342/ssd-crucial-t705-2tb-nvme-pcie-gen5-x4-leitura-14500mb-s-e-gravacao-12700mb-s-ct2000t705ssd3" target="_blank" class="hover:text-amber-300 underline">Kabum - SSD Crucial T705 2TB NVMe PCIe Gen5</a></li>
+                        <li><a href="https://www.kabum.com.br/produto/696620/ssd-m-2-2tb-crucial-t700-pro-nvme-pcie-5-0-ct2000t700ssd3" target="_blank" class="hover:text-amber-600 dark:hover:text-amber-300 underline">KaBuM! - SSD Crucial T705 2TB NVMe PCIe Gen5 (CT2000T705SSD3)</a></li>
                     </ul>
                 </div>
             </section>
 
-            <section id="motherboard" class="pt-16">
-                <h2 class="text-4xl font-extrabold mb-4 text-slate-100">4. A Espinha Dorsal: Placa-Mãe</h2>
-                <p class="mb-8 text-lg text-slate-400">
-                    A placa-mãe é tipo a 'central de comando' do seu PC. É ela que junta o processador, a RAM, o SSD e tudo mais, fazendo a comunicação rolar lisinha. A gente foi de ASUS ROG MAXIMUS Z790 HERO, que é uma senhora placa! Ela tem o encaixe certinho pro nosso processador, um monte de slots super rápidos (DDR5 e PCIe 5.0) e um monte de funções inteligentes pra facilitar a vida na hora de montar e turbinar o desempenho.
+            <section id="motherboard" class="pt-16 fade-in-section">
+                <h2 class="text-4xl font-extrabold mb-4 text-slate-800 dark:text-slate-100">4. A Espinha Dorsal: Placa-Mãe</h2>
+                <p class="mb-8 text-lg text-slate-600 dark:text-slate-400">
+                    A placa-mãe é tipo a 'central de comando' do seu PC, a espinha dorsal que conecta e faz todo mundo se 'falar'. Pensa nela como o sistema nervoso central do computador! Ela tem os "encaixes" (slots e portas) para o processador, a RAM, o SSD, a placa de vídeo e todos os outros periféricos (USB, internet, som). Ela é a responsável por distribuir a energia de forma estável e garantir que os dados fluam sem gargalos entre os componentes. Uma boa placa-mãe também define o que você pode ou não usar de peças mais novas (como o PCIe 5.0 e a DDR5). A gente foi de ASUS ROG MAXIMUS Z790 HERO, que é uma senhora placa! Ela tem o encaixe certinho pro nosso processador, um monte de slots super rápidos (DDR5 e PCIe 5.0) e um monte de funções inteligentes pra facilitar a vida na hora de montar e turbinar o desempenho.
                 </p>
                 <div class="flex justify-center items-center mb-8">
-                    <img src="https://images.kabum.com.br/produtos/fotos/395638/placa-mae-asus-rog-maximus-z790-hero-intel-lga-1700-atx-ddr5_1699981881_g.jpg" onerror="this.onerror=null;this.src='https://placehold.co/600x400/fde68a/1e293b?text=Placa-Mae+Z790';" alt="[Imagem da Placa-Mãe ASUS ROG MAXIMUS Z790 HERO]" class="rounded-xl shadow-xl w-full md:w-2/3 lg:w-1/2 h-auto max-h-[300px] object-contain">
+                    <img src="https://media.pichau.com.br/media/catalog/product/cache/2f958555330323e505eba7ce930bdf27/r/o/rog-maximus-z790-hero3.jpg" onerror="this.onerror=null; this.src='l';" alt="Placa-Mãe ASUS ROG MAXIMUS Z790 HERO" class="bg-gray-200 dark:bg-slate-800 rounded-xl shadow-xl w-full md:w-2/3 lg:w-1/2 h-auto max-h-[300px] object-contain transition-colors duration-300">
                 </div>
-                <div class="bg-slate-800 p-6 rounded-xl shadow-xl border border-slate-700 overflow-x-auto mb-6">
+                <div class="bg-gray-50 dark:bg-slate-800 p-6 rounded-xl shadow-xl border border-gray-200 dark:border-slate-700 overflow-x-auto mb-6 transition-colors duration-300">
                    <table class="w-full text-left">
-                        <thead class="border-b-2 border-slate-700">
-                            <tr><th colspan="2" class="text-xl font-bold pb-2 text-slate-100">Recursos e Conexões: ASUS ROG Z790 HERO</th></tr>
+                        <thead class="border-b-2 border-gray-300 dark:border-slate-700">
+                            <tr><th colspan="2" class="text-xl font-bold pb-2 text-slate-800 dark:text-slate-100">Recursos e Conexões: ASUS ROG Z790 HERO</th></tr>
                         </thead>
                         <tbody>
-                            <tr class="border-b border-slate-800"><td class="py-2 pr-4 font-semibold text-slate-200">Soquete CPU</td><td class="text-slate-300">Intel LGA 1700</td></tr>
-                            <tr class="border-b border-slate-800"><td class="py-2 pr-4 font-semibold text-slate-200">Chipset</td><td class="text-slate-300">Intel Z790</td></tr>
-                            <tr class="border-b border-slate-800"><td class="py-2 pr-4 font-semibold text-slate-200">Suporte Memória</td><td class="text-slate-300">4 x DIMM DDR5 (até 7800+ MT/s)</td></tr>
-                            <tr class="border-b border-slate-800"><td class="py-2 pr-4 font-semibold text-slate-200">Slots PCIe x16</td><td class="text-slate-300">2 x PCIe 5.0 SafeSlots</td></tr>
-                            <tr class="border-b border-slate-800"><td class="py-2 pr-4 font-semibold text-slate-200">Slots M.2</td><td class="text-slate-300">3x PCIe 4.0 + 1x PCIe 5.0 (c/ Hyper M.2 card)</td></tr>
-                            <tr class="border-b border-slate-800"><td class="py-2 pr-4 font-semibold text-slate-200">USB Traseiro</td><td class="text-slate-300">2x Thunderbolt™ 4 (USB-C)</td></tr>
-                            <tr><td class="py-2 pr-4 font-semibold text-slate-200">Rede</td><td class="text-slate-300">WiFi 6E + Intel 2.5 Gb Ethernet</td></tr>
+                            <tr class="border-b border-gray-100 dark:border-slate-800"><td class="py-2 pr-4 font-semibold text-slate-700 dark:text-slate-200">Soquete CPU</td><td class="text-slate-600 dark:text-slate-300">Intel LGA 1700</td></tr>
+                            <tr class="border-b border-gray-100 dark:border-slate-800"><td class="py-2 pr-4 font-semibold text-slate-700 dark:text-slate-200">Chipset</td><td class="text-slate-600 dark:text-slate-300">Intel Z790</td></tr>
+                            <tr class="border-b border-gray-100 dark:border-slate-800"><td class="py-2 pr-4 font-semibold text-slate-700 dark:text-slate-200">Suporte Memória</td><td class="text-slate-600 dark:text-slate-300">4 x DIMM DDR5 (até 7800+ MT/s)</td></tr>
+                            <tr class="border-b border-gray-100 dark:border-slate-800"><td class="py-2 pr-4 font-semibold text-slate-700 dark:text-slate-200">Slots PCIe x16</td><td class="text-slate-600 dark:text-slate-300">2 x PCIe 5.0 SafeSlots</td></tr>
+                            <tr class="border-b border-gray-100 dark:border-slate-800"><td class="py-2 pr-4 font-semibold text-slate-700 dark:text-slate-200">Slots M.2</td><td class="text-slate-600 dark:text-slate-300">3x PCIe 4.0 + 1x PCIe 5.0 (c/ Hyper M.2 card)</td></tr>
+                            <tr class="border-b border-gray-100 dark:border-slate-800"><td class="py-2 pr-4 font-semibold text-slate-700 dark:text-slate-200">USB Traseiro</td><td class="text-slate-600 dark:text-slate-300">2x Thunderbolt™ 4 (USB-C)</td></tr>
+                            <tr><td class="py-2 pr-4 font-semibold text-slate-700 dark:text-slate-200">Rede</td><td class="text-slate-600 dark:text-slate-300">WiFi 6E + Intel 2.5 Gb Ethernet</td></tr>
                         </tbody>
                     </table>
                 </div>
-                <div class="text-sm text-slate-400">
-                    <h4 class="font-bold mb-2 text-slate-300">Fonte Principal:</h4>
+                <div class="text-sm text-slate-500 dark:text-slate-400">
+                    <h4 class="font-bold mb-2 text-slate-600 dark:text-slate-300">Fonte Principal:</h4>
                     <ul class="list-disc list-inside space-y-1">
-                        <li><a href="https://www.kabum.com.br/produto/395638/placa-mae-asus-rog-maximus-z790-hero-intel-lga-1700-atx-ddr5" target="_blank" class="hover:text-amber-300 underline">Kabum - Placa Mãe ASUS ROG MAXIMUS Z790 HERO</a></li>
+                        <li><a href="https://www.pichau.com.br/placa-mae-asus-rog-maximus-z790-hero-ddr5-socket-lga-1700-chipset-intel-z790-rog-maximus-z790-hero" target="_blank" class="hover:text-amber-600 dark:hover:text-amber-300 underline">Pichau! - Placa-Mãe ASUS ROG MAXIMUS Z790 HERO (90MB1CI0-M0EAY0)</a></li>
                     </ul>
                 </div>
             </section>
         </main>
     </div>
 
-    <footer class="text-center p-8 bg-slate-950 text-slate-500 mt-16">
+    <footer class="text-center p-8 bg-gray-100 dark:bg-slate-950 text-slate-600 dark:text-slate-500 mt-16 transition-colors duration-300">
         <p>Trabalho de Arquitetura de Computadores e Hardware - 2º Bimestre</p>
         <p class="font-bold">UniFatecie - 2025</p>
         <p class="mt-2 text-sm">Integrantes: [Nome 1 - RA], [Nome 2 - RA], [Nome 3 - RA], [Nome 4 - RA], [Nome 5 - RA], [Nome 6 - RA]</p>
@@ -285,6 +312,28 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            const themeToggleDesktopBtn = document.getElementById('theme-toggle-desktop');
+            const themeToggleMobileBtn = document.getElementById('theme-toggle-mobile');
+            const htmlElement = document.documentElement;
+            let performanceChartInstance; // Guardar a instância do gráfico
+
+            const sunIcon = `
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 mx-auto">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-6.364-.386l1.591-1.591M3 12h2.25m.386-6.364l1.591 1.591" />
+                </svg>
+                <span class="ml-2 hidden sm:inline">Tema Claro</span>`;
+
+            const moonIcon = `
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 mx-auto">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" />
+                </svg>
+                <span class="ml-2 hidden sm:inline">Tema Escuro</span>`;
+            
+            const sunIconMobile = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-6.364-.386l1.591-1.591M3 12h2.25m.386-6.364l1.591 1.591" /></svg>`;
+            const moonIconMobile = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" /></svg>`;
+
+
+            // Dados para o gráfico de performance
             const performanceData = {
                 labels: ['Velocidade Leitura SSD (MB/s)', 'Velocidade Escrita SSD (MB/s)', 'Velocidade RAM (MT/s)', 'Consumo CPU (Watts)'],
                 datasets: [{
@@ -306,41 +355,32 @@
                 }]
             };
 
+            // Configurações do gráfico
             const config = {
                 type: 'bar',
                 data: performanceData,
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    indexAxis: 'y',
+                    indexAxis: 'y', // Barras horizontais
                     scales: {
                         x: {
                             beginAtZero: true,
-                            grid: {
-                                color: 'rgba(71, 85, 105, 0.5)' // slate-600 with transparency
-                            },
-                            ticks: {
-                                color: '#cbd5e1' // slate-300
-                            }
+                            // Cores do grid e ticks serão definidas dinamicamente
                         },
                         y: {
                             grid: {
                                 display: false
                             },
-                             ticks: {
-                                color: '#cbd5e1', // slate-300
-                                font: {
-                                    weight: 'bold'
-                                }
-                            }
+                            // Cores dos ticks serão definidas dinamicamente
                         }
                     },
                     plugins: {
                         legend: {
-                            display: false
+                            display: false // Não exibe a legenda do dataset
                         },
                         tooltip: {
-                            backgroundColor: '#0f172a', // slate-900
+                            // Cores do tooltip serão definidas dinamicamente
                             titleFont: { size: 16 },
                             bodyFont: { size: 14 },
                             callbacks: {
@@ -363,9 +403,58 @@
                 }
             };
             
+            // Renderiza o gráfico
             const performanceChartCtx = document.getElementById('performanceChart').getContext('2d');
-            new Chart(performanceChartCtx, config);
+            performanceChartInstance = new Chart(performanceChartCtx, config);
             
+            function applyTheme(theme) {
+                if (theme === 'dark') {
+                    htmlElement.classList.add('dark');
+                    if(themeToggleDesktopBtn) themeToggleDesktopBtn.innerHTML = sunIcon.replace('class="w-5 h-5 mx-auto"','class="w-5 h-5 inline-block"');
+                    if(themeToggleMobileBtn) themeToggleMobileBtn.innerHTML = sunIconMobile;
+                    
+                    if (performanceChartInstance) {
+                        performanceChartInstance.options.scales.x.grid.color = 'rgba(71, 85, 105, 0.5)'; // slate-600
+                        performanceChartInstance.options.scales.x.ticks.color = '#cbd5e1'; // slate-300
+                        performanceChartInstance.options.scales.y.ticks.color = '#cbd5e1'; // slate-300
+                        performanceChartInstance.options.plugins.tooltip.backgroundColor = '#0f172a'; // slate-900
+                        performanceChartInstance.options.plugins.tooltip.titleColor = '#f1f5f9'; // slate-100
+                        performanceChartInstance.options.plugins.tooltip.bodyColor = '#cbd5e1'; // slate-300
+                        performanceChartInstance.update('none'); // 'none' para evitar reanimação
+                    }
+                } else {
+                    htmlElement.classList.remove('dark');
+                    if(themeToggleDesktopBtn) themeToggleDesktopBtn.innerHTML = moonIcon.replace('class="w-5 h-5 mx-auto"','class="w-5 h-5 inline-block"');
+                    if(themeToggleMobileBtn) themeToggleMobileBtn.innerHTML = moonIconMobile;
+
+                    if (performanceChartInstance) {
+                        performanceChartInstance.options.scales.x.grid.color = 'rgba(203, 213, 225, 0.5)'; // slate-300
+                        performanceChartInstance.options.scales.x.ticks.color = '#334155'; // slate-700
+                        performanceChartInstance.options.scales.y.ticks.color = '#334155'; // slate-700
+                        performanceChartInstance.options.plugins.tooltip.backgroundColor = '#ffffff';
+                        performanceChartInstance.options.plugins.tooltip.titleColor = '#1e293b'; // slate-800
+                        performanceChartInstance.options.plugins.tooltip.bodyColor = '#475569'; // slate-600
+                        performanceChartInstance.update('none'); // 'none' para evitar reanimação
+                    }
+                }
+            }
+
+            function toggleTheme() {
+                const currentTheme = htmlElement.classList.contains('dark') ? 'dark' : 'light';
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                localStorage.setItem('theme', newTheme);
+                applyTheme(newTheme);
+            }
+
+            // Carrega o tema inicial
+            const savedTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            applyTheme(savedTheme);
+
+            if(themeToggleDesktopBtn) themeToggleDesktopBtn.addEventListener('click', toggleTheme);
+            if(themeToggleMobileBtn) themeToggleMobileBtn.addEventListener('click', toggleTheme);
+
+
+            // Efeito de rolagem suave para os links da navegação
             document.querySelectorAll('a[href^="#"]').forEach(anchor => {
                 anchor.addEventListener('click', function (e) {
                     e.preventDefault();
@@ -373,6 +462,29 @@
                         behavior: 'smooth'
                     });
                 });
+            });
+
+            // Efeito de fade-in para as seções ao rolar (IntersectionObserver)
+            const fadeSections = document.querySelectorAll('.fade-in-section');
+
+            const observerOptions = {
+                root: null, // viewport como root
+                rootMargin: '0px',
+                threshold: 0.1 // 10% da seção visível para ativar
+            };
+
+            const sectionObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                        // Opcional: para o elemento aparecer apenas uma vez
+                        observer.unobserve(entry.target); 
+                    }
+                });
+            }, observerOptions);
+
+            fadeSections.forEach(section => {
+                sectionObserver.observe(section);
             });
         });
     </script>
