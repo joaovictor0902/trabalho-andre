@@ -9,6 +9,15 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Neutrals (Slate, Stone, Amber) -->
+    <!-- Application Structure Plan: A single-page application with a fixed sidebar for navigation. The main content area is scrollable. The structure begins with a "Visão Geral" (Overview) dashboard that presents key stats, a comparative performance chart, and a CSS-based component synergy diagram. This high-level view allows for quick understanding and comparison. Following the overview, dedicated sections for each component (CPU, RAM, SSD, Placa-Mãe) provide in-depth information. This top-down approach was chosen because it caters to both users who want a quick summary and those who wish to delve into the details of each part, enhancing usability and information retention. The flow is logical: overview -> deep dive. -->
+    <!-- Visualization & Content Choices: 
+        - Report Info: Component Performance Comparison -> Goal: Compare -> Viz: Interactive Bar Chart -> Interaction: Hover tooltips show precise values. -> Justification: A bar chart is excellent for visually comparing disparate metrics like speed (MB/s) and power (Watts) in a normalized way, making complex data immediately understandable. -> Library: Chart.js (Canvas).
+        - Report Info: Component Synergy -> Goal: Relationships -> Viz: CSS/HTML Diagram -> Interaction: Static visual aid. -> Justification: A visual diagram is more intuitive for understanding how components connect than text alone. Building it with HTML/CSS avoids forbidden SVG/image files and adds a unique, clean aesthetic. -> Method: Styled divs with borders.
+        - Report Info: Detailed Specs -> Goal: Inform/Organize -> Viz: HTML Tables -> Interaction: None. -> Justification: Tables are the standard and most effective way to present structured technical data for easy reading and comparison. -> Method: HTML/Tailwind.
+        - Report Info: Key stats for each component -> Goal: Inform -> Viz: Stat Cards -> Interaction: None. -> Justification: Large, bold "hero" stats catch the eye and highlight the most impressive features of each component. -> Method: HTML/Tailwind.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -144,7 +153,7 @@
                     Sabe o que faz o seu PC pensar rapidão e rodar tudo liso? É o processador, o 'cérebro' da máquina! Pra esse trabalho, a gente pegou um dos mais brabos que tem: o Intel Core i9-14900K. Com ele, que tem um monte de 'núcleos' inteligentes e chega a uns 6 GHz, seu PC vai ser um monstro pra qualquer coisa!
                 </p>
                 <div class="flex justify-center items-center mb-8">
-                    <img src="https://static.techspot.com/images2/news/bigimage/2023/10/2023-10-16-image-11.jpg" onerror="this.onerror=null;this.src='https://placehold.co/600x400/fde68a/1e293b?text=Processador+Intel+Core+i9';" alt="[Image of Intel Core i9-14900K Processor]" class="rounded-xl shadow-xl w-full md:w-2/3 lg:w-1/2 h-auto max-h-[300px] object-contain">
+                    <img src="https://images.kabum.com.br/produtos/fotos/401129/processador-intel-core-i9-14900k-24-cores-32-threads-3-2ghz-5-8ghz-turbo-cache-36mb-lga-1700-bx8071514900k_1701385989_g.jpg" onerror="this.onerror=null;this.src='https://placehold.co/600x400/fde68a/1e293b?text=Processador+Intel+Core+i9';" alt="[Imagem de um Processador Intel Core i9-14900K]" class="rounded-xl shadow-xl w-full md:w-2/3 lg:w-1/2 h-auto max-h-[300px] object-contain">
                 </div>
                 <div class="bg-slate-800 p-6 rounded-xl shadow-xl border border-slate-700 overflow-x-auto mb-6">
                     <table class="w-full text-left">
@@ -165,7 +174,7 @@
                 <div class="text-sm text-slate-400">
                     <h4 class="font-bold mb-2 text-slate-300">Fonte Principal:</h4>
                     <ul class="list-disc list-inside space-y-1">
-                        <li><a href="https://www.techpowerup.com/cpu-specs/core-i9-14900k.c3269" target="_blank" class="hover:text-amber-300 underline">TechPowerUp - Core i9-14900K</a></li>
+                        <li><a href="https://www.kabum.com.br/produto/401129/processador-intel-core-i9-14900k-24-cores-32-threads-3-2ghz-5-8ghz-turbo-cache-36mb-lga-1700-bx8071514900k" target="_blank" class="hover:text-amber-300 underline">Kabum - Processador Intel Core i9-14900K</a></li>
                     </ul>
                 </div>
             </section>
@@ -176,7 +185,7 @@
                     Pensa na memória RAM como a mesa de trabalho do seu PC. Quanto maior e mais rápida, mais bagunça (leia-se, programas e jogos) você pode ter ao mesmo tempo sem que ele engasgue. A DDR5 é a última moda, um verdadeiro 'turbo' comparado com a antiga DDR4. Ela vem com uns truques inteligentes pra economizar energia e até corrigir errinhos, garantindo que seu processador trabalhe no talo!
                 </p>
                 <div class="flex justify-center items-center mb-8">
-                    <img src="https://m.media-amazon.com/images/I/71u9sWp+uQL._AC_UF894,1000_QL80_.jpg" onerror="this.onerror=null;this.src='https://placehold.co/600x400/fde68a/1e293b?text=Memoria+DDR5';" alt="[Image of DDR5 RAM Module]" class="rounded-xl shadow-xl w-full md:w-2/3 lg:w-1/2 h-auto max-h-[300px] object-contain">
+                    <img src="https://images.kabum.com.br/produtos/fotos/334200/memoria-kingston-fury-beast-ddr5-16gb-5600mhz-cl40-preto-kf556c40bb-16_1669837943_g.jpg" onerror="this.onerror=null;this.src='https://placehold.co/600x400/fde68a/1e293b?text=Memoria+DDR5';" alt="[Imagem de um Módulo de Memória RAM DDR5]" class="rounded-xl shadow-xl w-full md:w-2/3 lg:w-1/2 h-auto max-h-[300px] object-contain">
                 </div>
                 <div class="bg-slate-800 p-6 rounded-xl shadow-xl border border-slate-700 overflow-x-auto mb-6">
                    <table class="w-full text-left">
@@ -208,7 +217,7 @@
                     Sabe onde ficam guardados seus jogos, fotos e o Windows, mesmo quando o PC está desligado? No armazenamento! E pra não ter mais tela de carregamento infinita, a gente escolheu um SSD NVMe PCIe 5.0, tipo o Crucial T705. Esse bicho é tão rápido que lê dados a mais de 14.000 MB/s! É tipo um 'teletransporte' para seus arquivos, deixando tudo instantâneo.
                 </p>
                 <div class="flex justify-center items-center mb-8">
-                    <img src="https://www.crucial.com/content/dam/Micron/images/products/ssd/crucial-t705-nvme-ssd/crucial-t705-nvme-ssd-angled-product-shot.png" onerror="this.onerror=null;this.src='https://placehold.co/600x400/fde68a/1e293b?text=SSD+NVMe+Gen5';" alt="[Image of Crucial T705 NVMe PCIe 5.0 SSD]" class="rounded-xl shadow-xl w-full md:w-2/3 lg:w-1/2 h-auto max-h-[300px] object-contain">
+                    <img src="https://images.kabum.com.br/produtos/fotos/505342/ssd-crucial-t705-2tb-nvme-pcie-gen5-x4-leitura-14500mb-s-e-gravacao-12700mb-s-ct2000t705ssd3_1707920194_g.jpg" onerror="this.onerror=null;this.src='https://placehold.co/600x400/fde68a/1e293b?text=SSD+NVMe+Gen5';" alt="[Imagem de Crucial T705 NVMe PCIe 5.0 SSD]" class="rounded-xl shadow-xl w-full md:w-2/3 lg:w-1/2 h-auto max-h-[300px] object-contain">
                 </div>
                 <div class="bg-slate-800 p-6 rounded-xl shadow-xl border border-slate-700 overflow-x-auto mb-6">
                    <table class="w-full text-left">
@@ -229,7 +238,7 @@
                 <div class="text-sm text-slate-400">
                     <h4 class="font-bold mb-2 text-slate-300">Fonte Principal:</h4>
                     <ul class="list-disc list-inside space-y-1">
-                        <li><a href="https://www.bhphotovideo.com/c/product/1810943-REG/crucial_ct2000t705ssd3_2tb_t705_nvme_pcie.html" target="_blank" class="hover:text-amber-300 underline">B&H Photo Video - Crucial T705 NVMe PCIe 5.0 M.2</a></li>
+                        <li><a href="https://www.kabum.com.br/produto/505342/ssd-crucial-t705-2tb-nvme-pcie-gen5-x4-leitura-14500mb-s-e-gravacao-12700mb-s-ct2000t705ssd3" target="_blank" class="hover:text-amber-300 underline">Kabum - SSD Crucial T705 2TB NVMe PCIe Gen5</a></li>
                     </ul>
                 </div>
             </section>
@@ -240,7 +249,7 @@
                     A placa-mãe é tipo a 'central de comando' do seu PC. É ela que junta o processador, a RAM, o SSD e tudo mais, fazendo a comunicação rolar lisinha. A gente foi de ASUS ROG MAXIMUS Z790 HERO, que é uma senhora placa! Ela tem o encaixe certinho pro nosso processador, um monte de slots super rápidos (DDR5 e PCIe 5.0) e um monte de funções inteligentes pra facilitar a vida na hora de montar e turbinar o desempenho.
                 </p>
                 <div class="flex justify-center items-center mb-8">
-                    <img src="https://rog.asus.com/media/global/products/f9x1x0x56a42a033/xU87p4qgR6VnJt9Q/ROG-MAXIMUS-Z790-HERO_product.png" onerror="this.onerror=null;this.src='https://placehold.co/600x400/fde68a/1e293b?text=Placa-Mae+Z790';" alt="[Image of ASUS ROG MAXIMUS Z790 HERO Motherboard]" class="rounded-xl shadow-xl w-full md:w-2/3 lg:w-1/2 h-auto max-h-[300px] object-contain">
+                    <img src="https://images.kabum.com.br/produtos/fotos/395638/placa-mae-asus-rog-maximus-z790-hero-intel-lga-1700-atx-ddr5_1699981881_g.jpg" onerror="this.onerror=null;this.src='https://placehold.co/600x400/fde68a/1e293b?text=Placa-Mae+Z790';" alt="[Imagem da Placa-Mãe ASUS ROG MAXIMUS Z790 HERO]" class="rounded-xl shadow-xl w-full md:w-2/3 lg:w-1/2 h-auto max-h-[300px] object-contain">
                 </div>
                 <div class="bg-slate-800 p-6 rounded-xl shadow-xl border border-slate-700 overflow-x-auto mb-6">
                    <table class="w-full text-left">
@@ -261,7 +270,7 @@
                 <div class="text-sm text-slate-400">
                     <h4 class="font-bold mb-2 text-slate-300">Fonte Principal:</h4>
                     <ul class="list-disc list-inside space-y-1">
-                        <li><a href="https://rog.asus.com/br/motherboards/rog-maximus/rog-maximus-z790-hero-model/" target="_blank" class="hover:text-amber-300 underline">ASUS ROG - MAXIMUS Z790 HERO</a></li>
+                        <li><a href="https://www.kabum.com.br/produto/395638/placa-mae-asus-rog-maximus-z790-hero-intel-lga-1700-atx-ddr5" target="_blank" class="hover:text-amber-300 underline">Kabum - Placa Mãe ASUS ROG MAXIMUS Z790 HERO</a></li>
                     </ul>
                 </div>
             </section>
